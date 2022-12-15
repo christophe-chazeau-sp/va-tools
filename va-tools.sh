@@ -55,6 +55,7 @@ get_certificates() {
     if ! openssl s_client -showcerts -connect "$1" > "${output_file}" < /dev/null 2> /dev/null
     then
         echo "There was a problem with getting certificates from ${1} please check that it is the right server name and port"
+        return 1
     fi
     
     awk '
