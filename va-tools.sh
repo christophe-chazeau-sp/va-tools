@@ -22,7 +22,6 @@ COLORS['ERROR']='\E[0;31m'
 COLORS['INFO']='\E[0;34m'
 COLORS['RESET']=$(tput sgr0)
 
-## Variables
 # URL_REGEX : to check if a variable is a regex
 URL_REGEX='(https?)://[-[:alnum:]\+&@#/%?=~_|!:,.;]*[-[:alnum:]\+&@#/%=~_|]'
 
@@ -94,8 +93,9 @@ def colors:
 def colored_text(text; color):
   escape + colors[color] + text + escape + colors.reset;
 EOF
-
-## VA Connection
+#####################
+### VA Connection ###
+#####################
 # This will output the download speed of the VA either to a hook or to stdoout
 speed_test() {
     
@@ -128,7 +128,9 @@ speed_test() {
     done
 }
 
-## TLS / Certificates
+##########################
+### TLS / Certificates ###
+##########################
 # This function will get certificates from a <host>:<port> string and output
 # the whole chain in the current directory in files named after the CN
 get_certificates() {
@@ -166,7 +168,9 @@ print $0 > filename
     ' "${output_file}"
 }
 
-## Logging
+###############
+### Logging ###
+###############
 # Output json content of log files in a nicer readable format
 valogs() {
     # nb. of arguments check
