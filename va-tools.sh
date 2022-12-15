@@ -60,20 +60,23 @@ get_certificates() {
     
     awk '
 BEGIN {
-# change field separator, so that $2 returns everything after "CN = "
-FS="CN = "
+# change field separator, so that $2 returns everything after "CN = " or "CN="
+# Note : We need to handle differencies in the way openssl outputs
+# s_client accros version : 
+# openssl v1 outputs "CN=" and openssl v3 outputs "CN =" 
+FS="CN ?= ?"
 }
 # selects line which contains CN (e.g.  0 s:CN = www.openssl.org)
-/^ [0-9]+ s:.*CN = / {
+/^ [0-9]+ s:.*CN ?= ?/ {
 # use CN (e.g. www.openssl.org) as filename
+# but sanitize it, we don''t want spaces in there
 filename=gensub(/ /,"_","g",$2".pem")
 }
 # write all lines between "BEGIN CERTIFICATE" and "END CERTIFICATE" to filename
 /BEGIN CERTIFICATE/,/END CERTIFICATE/ {
 print $0 > filename
 }
-    ' "${output_file}"
-    
+    ' "${output_file}"    
 }
 
 ## Logging
