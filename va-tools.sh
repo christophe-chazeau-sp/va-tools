@@ -33,7 +33,7 @@ logline () {
     # nb. of arguments check
     if [ ! $# -eq 2 ]
     then
-        log "ERROR" "The ${FUNCNAME[0]} function has been called with an incorrect number of arguments, it needs 2 : ${FUNCNAME[0]} <level> <message>"
+        logline "ERROR" "The ${FUNCNAME[0]} function has been called with an incorrect number of arguments, it needs 2 : ${FUNCNAME[0]} <level> <message>"
         return 1
     fi
     
@@ -49,7 +49,7 @@ logmessage () {
     # nb. of arguments check
     if [ ! $# -eq 2 ]
     then
-        log "ERROR" "The ${FUNCNAME[0]} function has been called with an incorrect number of arguments, it needs 2 : ${FUNCNAME[0]} <level> <message>"
+        logline "ERROR" "The ${FUNCNAME[0]} function has been called with an incorrect number of arguments, it needs 2 : ${FUNCNAME[0]} <level> <message>"
         return 1
     fi
     
@@ -61,7 +61,7 @@ logmessage () {
 ## Colored Logging module for jq
 # First create ~/.jq directory :
 [ ! -d /home/sailpoint/.jq ] && mkdir /home/sailpoint/.jq
-# Them put our module in it : 
+# Them put our module in it :
 
 cat << EOF > /home/sailpoint/.jq/coloredvalogs.jq
 # Taken from https://apihandyman.io/api-toolbox-jq-and-openapi-part-4-bonus-coloring-jqs-raw-output/
@@ -139,15 +139,15 @@ get_certificates() {
     [[ ! $1 =~ .*:[0-9]* ]] && { echo "Usage : ${FUNCNAME[0]} <host>:<port>" ; return 1 ; }
     
     # Where to output ?
-    output_file=$(mktemp)
+    _output_file=$(mktemp)
     # output from openssl
-    if ! openssl s_client -showcerts -connect "$1" > "${output_file}" < /dev/null 2> /dev/null
+    if ! openssl s_client -showcerts -connect "$1" > "${_output_file}" < /dev/null 2> /dev/null
     then
         echo "There was a problem with getting certificates from ${1} please check that it is the right server name and port"
         return 1
     fi
     
-    awk '
+    _cert_files=$(awk '
 BEGIN {
 # change field separator, so that $2 returns everything after "CN = " or "CN="
 # Note : We need to handle differencies in the way openssl outputs
@@ -160,12 +160,18 @@ FS="CN ?= ?"
 # use CN (e.g. www.openssl.org) as filename
 # but sanitize it, we don''t want spaces in there
 filename=gensub(/ /,"_","g",$2".pem")
+printf filename" "
 }
 # write all lines between "BEGIN CERTIFICATE" and "END CERTIFICATE" to filename
 /BEGIN CERTIFICATE/,/END CERTIFICATE/ {
 print $0 > filename
 }
-    ' "${output_file}"
+    ' "${_output_file}")
+
+    logline "INFO" "The certificate chain is in now in those files in the pem format : $_cert_files"
+
+    # Removing our temp file
+    rm "${_output_file}"
 }
 
 ###############
@@ -176,7 +182,7 @@ valogs() {
     # nb. of arguments check
     if [ ! $# -eq 1 ]
     then
-        logfile "ERROR" "The ${FUNCNAME[0]} function has been called with an incorrect number of arguments, it needs 1 : ${FUNCNAME[0]} log_file in the log directory (va_agent, ccg ...)"
+        logfile "ERROR" "The ${FUNCNAME[0]} function has been called with an incorrect number of arguments, it needs 1 : ${FUNCNAME[0]} <container_name> (va_agent, ccg ...)"
         return 1
     fi
     
