@@ -186,6 +186,11 @@ valogs() {
         return 1
     fi
     
+    logline "WARNING" ""
+    logline "WARNING" "This function will only output data from json lines, please refer to the log file to see Stack traces"
+    logline "WARNING" "-----------------------------------------------------------------------------------------------------"
+    logline "WARNING" ""
+
     _file="/home/sailpoint/log/${1}.log"
     if [ ! -f "${_file}" ]
     then
