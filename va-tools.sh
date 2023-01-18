@@ -128,6 +128,26 @@ speed_test() {
     done
 }
 
+# MITM PROXY DETECTION
+mitm_proxy(){
+    # Let's try to guess if we are behind a proxy performing MITM
+    # Some free examples : https://mitmproxy.org/ or https://www.telerik.com/fiddler
+    # But lots of commercial ones are dong the same thing (Mc Afee, Fortinet ...)
+    
+    # Find the issuer of the certificate for the www.sailpoint.com website :
+    # Note : We use an untrusted connection because if there is a MITM proxy, then most probably
+    # curl won't be able to validate the certificate that has been signed on the fly by the Proxy's own
+    # CA that the VA don't trust.
+    # We assume here that the proxy is correctly setup (proxy.yaml, http_proxy env variables ...)
+    SAILPOINT_CERTIFICATE_ISSUER=$(curl --insecure --verbose --output /dev/null --silent https://www.sailpoint.com 2>&1 | grep "issuer:" | sed 's/.*issuer: //')
+    
+    # We want to find the string DigiCert in that issuer, otherwise, there is a problem and a proxy is
+    # most probably signing it on the fly
+    echo $SAILPOINT_CERTIFICATE_ISSUER | grep -q "DigiCert"
+    [[ $? -eq 0 ]] && logline "SUCCESS" "*No proxy or the proxy is not performing MITM* : www.sailpoint.com certificate has been issued by DigiCert as exepected : ${SAILPOINT_CERTIFICATE_ISSUER}" \
+    || logline "ERROR" "The proxy ${https_proxy} is most probably performing MITM because we expect a certificate issued by DigiCert but a connection to www.sailpoint.com returns a certificate issued by : ${SAILPOINT_CERTIFICATE_ISSUER}"
+}
+
 ##########################
 ### TLS / Certificates ###
 ##########################
@@ -167,9 +187,9 @@ printf filename" "
 print $0 > filename
 }
     ' "${_output_file}")
-
+    
     logline "INFO" "The certificate chain is in now in those files in the pem format : $_cert_files"
-
+    
     # Removing our temp file
     rm "${_output_file}"
 }
@@ -190,7 +210,7 @@ valogs() {
     logline "WARNING" "This function will only output data from json lines, please refer to the log file to see Stack traces"
     logline "WARNING" "-----------------------------------------------------------------------------------------------------"
     logline "WARNING" ""
-
+    
     _file="/home/sailpoint/log/${1}.log"
     if [ ! -f "${_file}" ]
     then
