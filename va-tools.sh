@@ -108,7 +108,7 @@ speed_test() {
     while true
     do
         # Now's date in ISO format
-        start_date=$(date '%m-%d-%YT%H:%M:%S')
+        start_date=$(date +'%m-%d-%YT%H:%M:%S')
         
         # Actual total download time
         time_total=$(curl -s -o /dev/null "${DL_URL}" -w "%{time_total}")
