@@ -193,6 +193,6 @@ valogs() {
         return 1 ;
     else
         # Read logs and output colors
-        tail -f "$_file" | jq -r -R 'include "coloredvalogs" ; fromjson? | colored_text("@"+."@timestamp";"blue")+" "+colored_text(.level;"magenta")+" "+.message'
+        tail -f "$_file" | grep -E --line-buffered '^\{".*\"}$' | jq -r -R 'include "coloredvalogs" ; fromjson? | colored_text("@"+."@timestamp";"blue")+" "+colored_text(.level;"magenta")+" "+.message'
     fi
 }
