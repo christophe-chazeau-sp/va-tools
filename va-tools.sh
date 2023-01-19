@@ -3,10 +3,50 @@
 # Are We being sourced ?
 if [[ "$0" = "$BASH_SOURCE" ]]; then
     echo "Please source this script. Do not execute."
+else
+    echo    "##################################################################################"
+    echo -e "###                \e[34mWelcome to the va-tools tools library\e[0m                       ###"
+    echo    "### Run the va-tools command to see what functions are vavailable at this time ###"
+    echo    "##################################################################################"
 fi
 
 ## Aliases
 alias ll='ls -al'
+
+##############################
+### What is that about ?? ####
+##############################
+va-tools() {
+    logline "INFO" "################"
+    logline "INFO" "### VA-TOOLS ###"
+    logline "INFO" "################"
+    logline "INFO" "This script offers a few functions simplifying certain VA tasks"
+    logline "INFO" "Here is the complete list of what it offers so far :"
+    logline "INFO" ""
+    logline "INFO" "  * logline   : logs a line with level coloring :"
+    logline "INFO" "      usage   : logline [SUCCESS|WARNING|ERROR|INFO] \"Message to log\""
+    logline "INFO" ""
+    logline "INFO" "  * logmessage   : logs a message with level coloring (no newline):"
+    logline "INFO" "      usage      : logmessage [SUCCESS|WARNING|ERROR|INFO] \"Message to log\""
+    logline "INFO" ""
+    logline "INFO" "  * speed_test   : Performs a connection test and output either to an endpoint or stdout"
+    logline "INFO" "      usage      : speed_test <FILE_TO_DOWNLOAD> <DELAY_BETWEEN_DOWNLOADS> <ENDPOINT_TO_POST_RESULTS>"
+    logline "INFO" "      default    : speed_test https://proof.ovh.net/files/100Mb.dat 10m stdout"
+    logline "INFO" ""
+    logline "INFO" "  * mitm_proxy   : Tries to guess if the VA connects through a proxy performing MITM :"
+    logline "INFO" "      usage      : mitm_proxy"
+    logline "INFO" ""
+    logline "INFO" "  * get_certificates   : Dumps the whole certificate chain (if available) presented by a server "
+    logline "INFO" "      usage            : get_certificates <SERVER>:<PORT>"
+    logline "INFO" ""
+    logline "INFO" "  * valogs    : Display and follow the logs in a more human friendly fashion. It will only handle JSON lines of logs"
+    logline "INFO" "      usage   : valogs <LOGFILE>"
+    logline "INFO" "      example : valogs ccg"
+    logline "INFO" ""
+    logline "INFO" "  * stunt   : Downloads and run the stunt script for the support to analyze"
+    logline "INFO" "      usage : stunt"
+}
+
 
 #######################################
 ### Helper functions and variables ####
