@@ -221,3 +221,16 @@ valogs() {
         tail -f "$_file" | grep -E --line-buffered '^\{".*\"}$' | jq -r -R 'include "coloredvalogs" ; fromjson? | colored_text("@"+."@timestamp";"blue")+" "+colored_text(.level;"magenta")+" "+.message'
     fi
 }
+
+# Get and Execute the stunt log script for support
+stunt() {
+    
+    _script_file=/tmp/stunt.sh
+    logline "INFO" "Downloading stunt script to ${_script_file} ..."
+    logline "INFO" "The VA needs to have access to the Internet and the githubusercontent.com domain to be opened on the firewalls"
+    curl -o ${_script_file} -fsSL https://raw.githubusercontent.com/luke-hagar-sp/VA-Scripts/main/stunt.sh
+    logline "INFO" "Executing stunt script from ${_script_file}"
+    chmod +x ${_script_file}
+    ${_script_file}
+    logline "INFO" "stunt script execution end"
+}
