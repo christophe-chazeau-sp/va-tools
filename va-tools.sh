@@ -7,6 +7,10 @@ else
     echo    "##################################################################################"
     echo -e "###                \e[34mWelcome to the va-tools tools library\e[0m                       ###"
     echo    "### Run the va-tools command to see what functions are vavailable at this time ###"
+    echo    "###                              DISCLAIMER                                    ###"
+    echo    "###     !!! This tool is neither released nor Supported by Sailpoint !!!       ###"
+    echo    "###     If you have questions, requests or bugs to report, please contact      ###"
+    echo    "###                       christophe.chazeau@sailpoint.com                     ###"
     echo    "##################################################################################"
 fi
 
